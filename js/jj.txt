@@ -4,7 +4,7 @@
  
  	 {
             "name": "2 门口机",
-			"name2": " <img src='https://file.fomille.site/1563044027980763138/1624964216649826306.webp'  />  ", 
+			"name2": " <img class='cImg'  src='https://file.fomille.site/1563044027980763138/1624964216649826306.webp'  />  ", 
 			"position": " ",  
 			"office": " ",  
 			"extn": "  "
