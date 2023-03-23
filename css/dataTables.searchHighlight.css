@@ -1,0 +1,13 @@
+
+
+table.dataTable span.highlight {
+        	-webkit-text-fill-color: #028FAF;/*文字的填充色*/
+            -webkit-text-stroke: 0.1px #028FAF;
+			 text-shadow:-1px 0px #fff;
+			color:#028FAF
+}
+
+table.dataTable span.column_highlight {
+  background-color: #ffcc99;
+  border-radius: 0.28571429rem;
+}
