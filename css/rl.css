@@ -406,4 +406,35 @@ div.column_half {
     display: inline-block;width:420px; padding: 20 20;  text-align: center;  line-height: 50px;	color: #FFFFFF; /* pink */
 	background-color: #1296F9; font-size: 18px;
 	 border-radius:30px;}
-.tabs a:hover{ background-color: #1266F9;}
+.tabs a:hover{ background-color: #1266F9; text-decoration: none}
+
+/* -------------------------202407--------------------------------*/
+
+.tabs_rl{width:720px; height:720px; margin:0 auto;csstext-align:center;  	border: 40px solid #fafafa; position: relative; border-radius:30px; background-color: #fafafa; padding: 80 80; }
+.tabs_rl h4{width:420px; height:25px;csstext-align:center; padding: 20 20;	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 25px;
+	line-height: 1.42857143;}
+	
+.tabs_rl a	{    position: relative;
+    display: inline-block;width:420px; padding: 20 20;  text-align: center;  line-height: 50px;	color: #FFFFFF; /* pink */
+	background-color: #1296F9; font-size: 18px;
+	 border-radius:30px;}
+.tabs_rl a:hover{ background-color: #1266F9; text-decoration: none}
+
+  img {width:380px;}
+  
+ p{text-align: center;
+}
+.tabs_rl {
+	width: 100%;
+	border: 0px solid #fafafa;
+	border-radius: 0px;
+    padding: 15% 0;
+}
+.tabs_rl  a{
+	width: 80%;
+	line-height: 90px;
+	border-radius: 60px;
+	font-size: 30px;
+}
+/* --------------------------------------------------------*/
