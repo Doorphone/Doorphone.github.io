@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Specific Download Links</title>
+	<link rel="stylesheet" type="text/css" href="../../css/rl.css">
+    <script>
+        function getDownloadLink() {
+            // 获取用户的操作系统信息
+            var userAgent = navigator.userAgent.toLowerCase();
+            
+            // 判断设备是 iOS 还是 Android
+            if (/iphone|ipod|ipad/.test(userAgent)) {
+                // 如果是苹果设备，返回苹果的下载链接
+                return "https://apps.apple.com/us/app/eseecloud-ip-pro-vr-cam/id1032277907?l=zh-Hans-CN&ls=1"; // 替换为苹果的下载链接
+            } else if (/android/.test(userAgent)) {
+                // 如果是安卓设备，返回安卓的下载链接
+                return "https://jdownload.oss-cn-qingdao.aliyuncs.com/apk/eseecloud/EseeCloud.apk"; // 替换为安卓的下载链接
+            } else {
+                // 如果是其他设备，返回默认的下载链接
+                return "https://jdownload.oss-cn-qingdao.aliyuncs.com/apk/eseecloud/EseeCloud.apk"; // 替换为默认的下载链接
+            }
+        }
+
+        window.onload = function() {
+            var downloadLink = getDownloadLink();
+            document.getElementById('downloadButton').href = downloadLink;
+        }
+    </script>
+</head>
+<body>
+	<div class="tabs">
+   <p>Download Our App<br>Click the button below to download the app:</p>
+
+     <p><a id="downloadButton" href="https://jdownload.oss-cn-qingdao.aliyuncs.com/apk/eseecloud/EseeCloud.apk" target="_blank">
+      下载
+    </a></p>
+	</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+ 
