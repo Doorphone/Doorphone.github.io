@@ -5,43 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Device Specific Download Links</title>
 	<link rel="stylesheet" type="text/css" href="../../css/rl.css">
-	<script type="text/javascript">
-        function getDownloadLink() {
-            // 获取用户的操作系统信息
-            var userAgent = navigator.userAgent.toLowerCase();
-            
-            // 判断设备是 iOS 还是 Android
-            if (/iphone|ipod|ipad/.test(userAgent)) {
-                // 如果是苹果设备，返回苹果的下载链接
-                return "https://apps.apple.com/us/app/eseecloud-ip-pro-vr-cam/id1032277907?l=zh-Hans-CN&ls=1"; // 替换为苹果的下载链接
-            } else if (/android/.test(userAgent)) {
-                // 如果是安卓设备，返回安卓的下载链接
-                return "https://jdownload.oss-cn-qingdao.aliyuncs.com/apk/eseecloud/EseeCloud.apk"; // 替换为安卓的下载链接
-            } else {
-                // 如果是其他设备，返回默认的下载链接
-                return "https://jdownload.oss-cn-qingdao.aliyuncs.com/apk/eseecloud/EseeCloud.apk"; // 替换为默认的下载链接
-            }
-        }
+ 
+<script type="text/javascript">
+    var mobileAgent = [
+        "android", "mobile", "blackberry", "webos", "incognito", "webmate",
+        "bada", "nokia", "lg", "ucweb", "skyfire"
+    ];
+    var mobileAgent2 = ["iphone", "ipod", "ipad"];
+    var browser = navigator.userAgent.toLowerCase();
+    var isMobile = false;
 
-        window.onload = function() {
-            var downloadLink = getDownloadLink();
-            document.getElementById('downloadButton').href = downloadLink;
+    // 检查是否是安卓设备
+    for (var i = 0; i < mobileAgent.length; i++) {
+        if (browser.indexOf(mobileAgent[i]) !== -1) {
+            isMobile = true;
+            // 安卓设备跳转到 APK 下载链接
+            location.href = 'https://jdownload.oss-cn-qingdao.aliyuncs.com/apk/eseecloud/EseeCloud.apk';
+            break;
         }
-    </script>
-	
-	<script type="text/javascript">
-        var mobileAgent = new Array( "android", "mobile", "blackberry", "webos", "incognito", "webmate",
-　　　　　　 "bada", "nokia", "lg", "ucweb", "skyfire");
-        var browser = navigator.userAgent.toLowerCase();
-        var isMobile = false;
-        for (var i=0; i<mobileAgent.length; i++) {
-            if (browser.indexOf(mobileAgent[i])!=-1) {
-                isMobile = true;
-                location.href = 'https://jdownload.oss-cn-qingdao.aliyuncs.com/apk/eseecloud/EseeCloud.apk';
-                break;
-            }
+    }
+
+    // 检查是否是苹果设备
+    for (var i = 0; i < mobileAgent2.length; i++) {
+        if (browser.indexOf(mobileAgent2[i]) !== -1) {
+            isMobile = true;
+            // 苹果设备跳转到 App Store 链接
+            location.href = 'https://apps.apple.com/us/app/eseecloud-ip-pro-vr-cam/id1032277907?l=zh-Hans-CN&ls=1';
+            break;
         }
+    }
+
+    // 如果是其他设备，可以选择跳转到默认页面或者做其他处理
+    if (!isMobile) {
+        // 你可以在这里添加桌面设备的下载链接或者其他逻辑
+        // 例如：
+        // location.href = "https://www.example.com/desktop-download";
+    }
 </script>
+
+
 </head>
 <body>
 	<div class="tabs">
