@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>楼宇门口机设置（统一户数）</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .setup-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .floor-setup {
+            margin-bottom: 20px;
+        }
+        .floor-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .floor-item label {
+            margin-right: 10px;
+            font-weight: bold;
+            min-width: 60px;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .main-container {
+            display: none;
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .room-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- 设置界面 -->
+    <div class="setup-container" id="setupContainer">
+        <h2>楼宇门口机设置</h2>
+        
+        <!-- 统一设置所有楼层户数 -->
+        <div style="margin-bottom: 20px;">
+            <label><strong>每层户数：</strong></label>
+            <input type="number" id="uniformRooms" min="1" max="20" value="4">
+            <button onclick="applyUniformRooms()">应用</button>
+        </div>
+
+        <!-- 楼层设置 -->
+        <div class="floor-setup" id="floorSetup">
+            <!-- 动态生成楼层设置 -->
+        </div>
+        <button onclick="generateRooms()">生成房号</button>
+    </div>
+
+    <!-- 主界面（初始隐藏） -->
+    <div class="main-container" id="mainContainer">
+        <div class="room-grid" id="roomGrid"></div>
+        <button onclick="backToSetup()" style="margin: 10px;">返回设置</button>
+    </div>
+
+    <script>
+        // 存储配置
+        const buildingConfig = {
+            totalFloors: 5,
+            roomsPerFloor: {}
+        };
+
+        // 初始化设置界面
+        function initSetupUI() {
+            const floorSetup = document.getElementById("floorSetup");
+            floorSetup.innerHTML = "";
+
+            // 总楼层数设置
+            const totalFloorsDiv = document.createElement("div");
+            totalFloorsDiv.innerHTML = `
+                <label>总楼层数：</label>
+                <input type="number" id="totalFloors" min="1" max="30" value="${buildingConfig.totalFloors}">
+                <button onclick="updateFloors()">更新</button>
+            `;
+            floorSetup.appendChild(totalFloorsDiv);
+
+            // 生成每层户数设置
+            renderFloorInputs();
+        }
+
+        // 动态生成楼层输入框
+        function renderFloorInputs() {
+            const floorSetup = document.getElementById("floorSetup");
+            const totalFloors = parseInt(document.getElementById("totalFloors").value);
+
+            // 清空现有输入框（保留总楼层设置）
+            const existingInputs = Array.from(floorSetup.children).filter(
+                child => !child.querySelector('input[id="totalFloors"]')
+            );
+            existingInputs.forEach(child => child.remove());
+
+            // 生成每层户数输入
+            for (let floor = 1; floor <= totalFloors; floor++) {
+                const floorDiv = document.createElement("div");
+                floorDiv.className = "floor-item";
+                floorDiv.innerHTML = `
+                    <label>${floor}楼：</label>
+                    <input type="number" id="floor-${floor}" min="1" max="20" 
+                           value="${buildingConfig.roomsPerFloor[floor] || document.getElementById("uniformRooms").value}">
+                    <span>户</span>
+                `;
+                floorSetup.appendChild(floorDiv);
+            }
+        }
+
+        // 更新总楼层数
+        function updateFloors() {
+            buildingConfig.totalFloors = parseInt(document.getElementById("totalFloors").value);
+            renderFloorInputs();
+        }
+
+        // 统一设置所有楼层户数
+        function applyUniformRooms() {
+            const uniformValue = parseInt(document.getElementById("uniformRooms").value);
+            const inputs = document.querySelectorAll('.floor-item input[type="number"]');
+            inputs.forEach(input => input.value = uniformValue);
+        }
+
+        // 生成房号并进入主界面
+        function generateRooms() {
+            buildingConfig.totalFloors = parseInt(document.getElementById("totalFloors").value);
+            buildingConfig.roomsPerFloor = {};
+
+            // 收集每层户数
+            for (let floor = 1; floor <= buildingConfig.totalFloors; floor++) {
+                buildingConfig.roomsPerFloor[floor] = parseInt(
+                    document.getElementById(`floor-${floor}`).value
+                );
+            }
+
+            // 生成房号数据（格式：楼层-房号）
+            const roomData = {};
+            for (const floor in buildingConfig.roomsPerFloor) {
+                const rooms = [];
+                for (let i = 1; i <= buildingConfig.roomsPerFloor[floor]; i++) {
+                    rooms.push(`${floor}-${i.toString().padStart(2, '0')}`);
+                }
+                roomData[`${floor}楼`] = rooms;
+            }
+
+            // 渲染主界面
+            renderMainUI(roomData);
+        }
+
+        // 渲染主界面
+        function renderMainUI(roomData) {
+            document.getElementById("setupContainer").style.display = "none";
+            document.getElementById("mainContainer").style.display = "flex";
+            const roomGrid = document.getElementById("roomGrid");
+            roomGrid.innerHTML = "";
+
+            // 默认显示1楼
+            const rooms = roomData["1楼"] || [];
+            rooms.forEach(room => {
+                const btn = document.createElement("button");
+                btn.className = "room-btn";
+                btn.textContent = room;
+                btn.onclick = () => alert(`呼叫 ${room}`);
+                roomGrid.appendChild(btn);
+            });
+        }
+
+        // 返回设置界面
+        function backToSetup() {
+            document.getElementById("setupContainer").style.display = "block";
+            document.getElementById("mainContainer").style.display = "none";
+        }
+
+        // 初始化
+        window.onload = initSetupUI;
+    </script>
+</body>
+</html>
