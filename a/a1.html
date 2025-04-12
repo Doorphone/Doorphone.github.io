@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>楼宇门口机设置（默认连续数字）</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .setup-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .config-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .floor-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+        label {
+            margin-right: 10px;
+            font-weight: bold;
+            min-width: 80px;
+        }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .main-container {
+            display: none;
+            width: 800px;
+            height: 600px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .room-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 设置界面 -->
+    <div class="setup-container" id="setupContainer">
+        <h2>楼宇门口机设置</h2>
+        
+        <!-- 全局配置 -->
+        <div class="config-section">
+            <h3>全局设置</h3>
+
+            <div style="margin-top: 15px;">
+                <label>总楼层数：</label>
+                <input type="number" id="totalFloors" min="1" max="30" value="5">
+                <button onclick="updateFloors()">更新</button>
+            </div>
+            <div style="margin-top: 15px;">
+                <label>统一户数：</label>
+                <input type="number" id="uniformRooms" min="1" max="20" value="2">
+                <button onclick="applyUniformRooms()">应用</button>
+            </div>
+            <div style="margin-top: 15px;">
+                <label>房号格式：</label>
+                <select id="roomFormat" onchange="toggleBuildingConfig()">
+                    <!-- 默认选中连续数字 -->
+                    <option value="101" selected>连续数字（101）</option>
+                    <option value="1-01">楼层-房号（1-01）</option>
+                    <option value="1A">楼层+字母（1A）</option>
+                    <option value="X-01">楼栋-房号（A-01）</option>
+                    <option value="X101">楼栋+数字（A101）</option>
+                    <option value="#101">美国公寓（#101）</option>
+                    <option value="1/01">欧洲格式（1/01）</option>
+                </select>
+            </div>
+			            <!-- 楼栋设置（默认隐藏） -->
+            <div id="buildingConfigSection" class="hidden"  style="margin-top: 15px;">
+                <label>楼栋标识：</label>
+                <input type="text" id="buildingLetter" maxlength="1" value="A" 
+                       style="width: 50px; text-transform: uppercase;" 
+                       placeholder="A">
+					   <span>（A/B/C...）</span>
+            </div>
+			
+			
+        </div>
+
+        <!-- 楼层设置 -->
+        <div class="config-section">
+            <h3>楼层户数设置</h3>
+            <div id="floorSetup"></div>
+        </div>
+        
+        <button onclick="generateRooms()" style="background: #27ae60;">生成房号</button>
+    </div>
+
+    <!-- 主界面 -->
+    <div class="main-container" id="mainContainer">
+        <div class="room-grid" id="roomGrid"></div>
+        <button onclick="backToSetup()" style="margin: 10px; background: #e74c3c;">返回设置</button>
+    </div>
+
+    <script>
+        // 存储配置
+        const buildingConfig = {
+            buildingLetter: "A",
+            totalFloors: 5,
+            roomsPerFloor: {},
+            roomFormat: "101" // 默认连续数字
+        };
+
+        // 初始化设置界面
+        function initSetupUI() {
+            renderFloorInputs();
+        }
+
+        // 动态显示/隐藏楼栋设置
+        function toggleBuildingConfig() {
+            const format = document.getElementById("roomFormat").value;
+            const buildingSection = document.getElementById("buildingConfigSection");
+            
+            // 需要楼栋的格式：含X或特殊前缀
+            const needsBuilding = /X|#/.test(format);
+            buildingSection.classList.toggle("hidden", !needsBuilding);
+        }
+
+        // 动态生成楼层输入框
+        function renderFloorInputs() {
+            const floorSetup = document.getElementById("floorSetup");
+            floorSetup.innerHTML = "";
+            const totalFloors = parseInt(document.getElementById("totalFloors").value);
+
+            for (let floor = 1; floor <= totalFloors; floor++) {
+                const floorDiv = document.createElement("div");
+                floorDiv.className = "floor-item";
+                floorDiv.innerHTML = `
+                    <label>${floor}楼：</label>
+                    <input type="number" id="floor-${floor}" min="1" max="20" 
+                           value="${buildingConfig.roomsPerFloor[floor] || document.getElementById("uniformRooms").value}">
+                    <span>户</span>
+                `;
+                floorSetup.appendChild(floorDiv);
+            }
+        }
+
+        // 更新总楼层数
+        function updateFloors() {
+            buildingConfig.totalFloors = parseInt(document.getElementById("totalFloors").value);
+            renderFloorInputs();
+        }
+
+        // 统一设置所有楼层户数
+        function applyUniformRooms() {
+            const uniformValue = parseInt(document.getElementById("uniformRooms").value);
+            const inputs = document.querySelectorAll('.floor-item input[type="number"]');
+            inputs.forEach(input => input.value = uniformValue);
+        }
+
+        // 生成房号（支持全球格式）
+        function generateRoomNumber(building, floor, roomIndex, format) {
+            const paddedRoom = roomIndex.toString().padStart(2, '0');
+            const letter = String.fromCharCode(64 + roomIndex); // A, B, C...
+
+            switch(format) {
+                case "101":     // 连续数字（默认）
+                    return `${floor}${paddedRoom}`;
+                case "1-01":    // 楼层-房号
+                    return `${floor}-${paddedRoom}`;
+                case "1A":     // 字母编号
+                    return `${floor}${letter}`;
+                case "X-01":    // 楼栋-房号
+                    return `${building}-${paddedRoom}`;
+                case "X101":   // 楼栋+数字
+                    return `${building}${floor}${paddedRoom}`;
+                case "#101":   // 美国公寓
+                    return `#${floor}${paddedRoom}`;
+                case "1/01":   // 欧洲格式
+                    return `${floor}/${paddedRoom}`;
+                default:
+                    return `${floor}${paddedRoom}`; // 默认连续数字
+            }
+        }
+
+        // 生成房号并进入主界面
+        function generateRooms() {
+            buildingConfig.roomFormat = document.getElementById("roomFormat").value;
+            
+            // 仅当格式需要时读取楼栋标识
+            if (/X|#/.test(buildingConfig.roomFormat)) {
+                buildingConfig.buildingLetter = document.getElementById("buildingLetter").value.toUpperCase();
+            }
+            
+            buildingConfig.totalFloors = parseInt(document.getElementById("totalFloors").value);
+            buildingConfig.roomsPerFloor = {};
+
+            // 收集每层户数
+            for (let floor = 1; floor <= buildingConfig.totalFloors; floor++) {
+                buildingConfig.roomsPerFloor[floor] = parseInt(
+                    document.getElementById(`floor-${floor}`).value
+                );
+            }
+
+            // 生成房号数据
+            const roomData = {};
+            for (const floor in buildingConfig.roomsPerFloor) {
+                const rooms = [];
+                const roomCount = buildingConfig.roomsPerFloor[floor];
+                
+                for (let i = 1; i <= roomCount; i++) {
+                    rooms.push(
+                        generateRoomNumber(
+                            buildingConfig.buildingLetter,
+                            floor,
+                            i,
+                            buildingConfig.roomFormat
+                        )
+                    );
+                }
+                roomData[`${floor}楼`] = rooms;
+            }
+
+            // 渲染主界面
+            renderMainUI(roomData);
+        }
+
+        // 渲染主界面
+        function renderMainUI(roomData) {
+            document.getElementById("setupContainer").style.display = "none";
+            document.getElementById("mainContainer").style.display = "flex";
+            const roomGrid = document.getElementById("roomGrid");
+            roomGrid.innerHTML = "";
+
+            // 默认显示1楼房号（连续数字格式，如101）
+            const rooms = roomData["1楼"] || [];
+            rooms.forEach(room => {
+                const btn = document.createElement("button");
+                btn.className = "room-btn";
+                btn.textContent = room;
+                btn.onclick = () => alert(`呼叫 ${room}`);
+                roomGrid.appendChild(btn);
+            });
+        }
+
+        // 返回设置界面
+        function backToSetup() {
+            document.getElementById("setupContainer").style.display = "block";
+            document.getElementById("mainContainer").style.display = "none";
+        }
+
+        // 初始化
+        window.onload = initSetupUI;
+    </script>
+</body>
+</html>
