@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Manual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            padding: 20px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .icon {
+            font-size: 24px;
+        }
+        
+        /* 视频教程部分 */
+        .video-section {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 30px;
+            margin-top: 30px;
+        }
+        
+        .video-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        
+        .video-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .video-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        
+        .video-link:hover {
+            background: #f1f5f9;
+            border-color: #3b82f6;
+            transform: translateX(5px);
+        }
+        
+        .video-icon {
+            font-size: 20px;
+            color: #3b82f6;
+            min-width: 30px;
+        }
+        
+        .video-text {
+            flex: 1;
+        }
+        
+        .video-link-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .video-link-desc {
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .qr-section {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 30px;
+            margin-top: 30px;
+        }
+        
+        .qr-title {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+        
+        .qr-code {
+            display: inline-block;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .qr-code img {
+            width: 150px;
+            height: 150px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .title {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 16px;
+                margin-bottom: 30px;
+            }
+            
+            .download-btn {
+                font-size: 18px;
+                padding: 18px 35px;
+            }
+            
+            .video-title {
+                font-size: 20px;
+            }
+            
+            .video-link {
+                padding: 14px 18px;
+            }
+            
+            .qr-code img {
+                width: 130px;
+                height: 130px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .title {
+                font-size: 24px;
+            }
+            
+            .subtitle {
+                font-size: 15px;
+            }
+            
+            .download-btn {
+                font-size: 17px;
+                padding: 16px 30px;
+            }
+            
+            .video-title {
+                font-size: 18px;
+            }
+            
+            .qr-code img {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Download Product Manual</h1>
+        
+        <p class="subtitle">
+            Get the complete user manual for your product. Download the PDF file for detailed instructions and specifications.
+        </p>
+        
+        <a href="https://file.s.sea-1st.com/1563044027980763138/1978031147779444738.pdf" class="download-btn" download>
+            <span class="icon">📥</span>
+            Download PDF
+        </a>
+        
+        <!-- 视频教程部分 -->
+        <div class="video-section">
+            <h2 class="video-title">Video Tutorials</h2>
+            <div class="video-links">
+                <a href="https://doorphone.github.io/wv/aa.html#666" class="video-link" target="_blank">
+                    <span class="video-icon">▶️</span>
+                    <div class="video-text">
+                        <div class="video-link-title">Setup Guide</div>
+                        <div class="video-link-desc">Learn how to set up your product</div>
+                    </div>
+                </a>
+                
+ 
+ 
+            </div>
+        </div>
+        
+ 
+    </div>
+    
+    <script>
+        // PDF下载处理
+        document.querySelector('.download-btn').addEventListener('click', function(e) {
+            // 如果链接为空或不存在，模拟下载
+            if(!this.getAttribute('href') || this.getAttribute('href') === '#') {
+                e.preventDefault();
+                
+                // 显示下载提示
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="icon">⏳</span> Downloading...';
+                this.style.pointerEvents = 'none';
+                
+                // 模拟下载延迟
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.style.pointerEvents = 'auto';
+                    alert('Product manual downloaded successfully!');
+                }, 1200);
+            }
+        });
+        
+        // 视频链接点击处理
+        document.querySelectorAll('.video-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if(!this.getAttribute('href') || this.getAttribute('href') === '#') {
+                    e.preventDefault();
+                    const title = this.querySelector('.video-link-title').textContent;
+                    alert(`"${title}" video will open in a new tab.`);
+                }
+            });
+        });
+        
+        // 简单加载动画
+        window.addEventListener('load', function() {
+            const container = document.querySelector('.container');
+            container.style.opacity = '0';
+            
+            setTimeout(() => {
+                container.style.transition = 'opacity 0.5s ease';
+                container.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
